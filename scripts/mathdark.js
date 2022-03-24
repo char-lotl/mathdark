@@ -1,14 +1,6 @@
 
-const bothInputs = document.querySelector('#both-inputs');
+const allInputs = document.querySelector('#all-inputs');
 const killsOutput = document.querySelector('#kills-output');
-
-let defense = 1;
-let toughness = 1;
-
-let quality = 5;
-let attacks = 1;
-let ap = 0;
-let deadly = 1;
 
 const profiles = {
   defense: 1,
@@ -19,7 +11,11 @@ const profiles = {
   deadly: 1,
   poison: false,
   rending: false,
-  relentless: false
+  relentless: false,
+  defenderPPU: null,
+  defenderUnitSize: null,
+  attackerPPU: null,
+  attackerUnitSize: null
 };
 
 const defenseParser = {
@@ -116,17 +112,22 @@ const recompute = function(p) {
 
 const updateOutput = function() {
   const expectedKills = recompute(profiles);
-  killsOutput.textContent = expectedKills.toFixed(3);
+  killsOutput.textContent = expectedKills.toFixed(4);
 };
 
 updateOutput();
 
-bothInputs.addEventListener('change', e => {
+allInputs.addEventListener('change', e => {
   const changedFieldID = e.target.id;
   if (e.target.type === 'select-one') {
     profiles[changedFieldID] = parseSelector[changedFieldID][e.target.value];
   } else if (e.target.type === 'checkbox') {
     profiles[changedFieldID] = e.target.checked;
+  } else if (e.target.type === 'number') {
+    profiles[changedFieldID] = Number(e.target.value);
+  } else {
+    console.log(e.target.type);
+    console.log(e.target.value);
   }
   updateOutput();
 
