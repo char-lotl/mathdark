@@ -16,7 +16,10 @@ const profiles = {
   quality: 5,
   attacks: 1,
   ap: 0,
-  deadly: 1
+  deadly: 1,
+  poison: false,
+  rending: false,
+  relentless: false
 };
 
 const defenseParser = {
@@ -73,13 +76,21 @@ const deadlyParser = {
   "deadly6": 6
 };
 
+const checkboxParser = {
+  "on": true,
+  "off": false
+};
+
 const parseSelector = {
   "defense": defenseParser,
   "toughness": toughParser,
   "quality": qualityParser,
   "attacks": attacksParser,
   "ap": apParser,
-  "deadly": deadlyParser
+  "deadly": deadlyParser,
+  "poison": checkboxParser,
+  "rending": checkboxParser,
+  "relentless": checkboxParser
 };
 
 const killsPerWound = function(d, t) {
@@ -94,17 +105,29 @@ const effectiveDefense = function(d, ap) {
 const recompute = function(p) {
   const kpw = killsPerWound(p.deadly, p.toughness);
   const ed = effectiveDefense(p.defense, p.ap);
-  const expectedWounds = p.attacks * p.quality * ed / 36;
+  const rendFactor = p.rending ? effectiveDefense(ed, 4) / ed : 1;
+  const poisonFactor = p.poison ? 3 : 1;
+  const relentlessFactor = p.relentless ? 7/6 : 1;
+  const expectedAttacks = p.attacks * relentlessFactor;
+  const effectiveQuality = p.quality - 1 + rendFactor * poisonFactor;
+  const expectedWounds = expectedAttacks * effectiveQuality * ed / 36;
   return expectedWounds * kpw;
 };
 
 const updateOutput = function() {
   const expectedKills = recompute(profiles);
-  killsOutput.textContent = expectedKills;
+  killsOutput.textContent = expectedKills.toFixed(3);
 };
+
+updateOutput();
 
 bothInputs.addEventListener('change', e => {
   const changedFieldID = e.target.id;
-  profiles[changedFieldID] = parseSelector[changedFieldID][e.target.value];
+  if (e.target.type === 'select-one') {
+    profiles[changedFieldID] = parseSelector[changedFieldID][e.target.value];
+  } else if (e.target.type === 'checkbox') {
+    profiles[changedFieldID] = e.target.checked;
+  }
   updateOutput();
+
 });
