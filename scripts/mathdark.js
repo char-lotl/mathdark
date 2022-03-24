@@ -72,9 +72,11 @@ const deadlyParser = {
   "deadly6": 6
 };
 
-const checkboxParser = {
-  "on": true,
-  "off": false
+const unitSizeParser = {
+  "size-one": 1,
+  "size-three": 3,
+  "size-five": 5,
+  "size-ten": 10
 };
 
 const parseSelector = {
@@ -84,9 +86,8 @@ const parseSelector = {
   "attacks": attacksParser,
   "ap": apParser,
   "deadly": deadlyParser,
-  "poison": checkboxParser,
-  "rending": checkboxParser,
-  "relentless": checkboxParser
+  "defenderUnitSize": unitSizeParser,
+  "attackerUnitSize": unitSizeParser
 };
 
 const killsPerWound = function(d, t) {
@@ -124,6 +125,7 @@ allInputs.addEventListener('change', e => {
   } else if (e.target.type === 'checkbox') {
     profiles[changedFieldID] = e.target.checked;
   } else if (e.target.type === 'number') {
+    console.log(e.target.value);
     profiles[changedFieldID] = Number(e.target.value);
   } else {
     console.log(e.target.type);

@@ -1,0 +1,155 @@
+* {
+	font-family: 'Trebuchet MS';
+	/*text-align: center;*/
+}
+
+
+#all-inputs > div {
+  display: inline-block;
+  width: 49.5%;
+  vertical-align: top;
+}
+/*
+
+body {
+	background-color: aliceblue;
+}
+
+#sidebar-right p {
+	background-color: #B0F0B0;
+	width: 40%;
+	padding: 5%;
+	margin: 10% auto;
+	border: 1%;
+	border-radius: 1vw;
+	font-size: 1.5vw;
+
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+}
+
+.app {
+
+}
+
+#board {
+	margin: auto;
+	width: 40%;
+	margin-top: 10%;
+}
+
+.rank {
+	float: left;
+	width: 100%;
+	clear: left;
+}
+
+.square {
+	width: 12.5%;
+	padding-bottom: 12.5%;
+	display: inline-block;
+	margin: 0;
+	float: left;
+	clear: none;
+}
+
+.square.light {
+	background-color: #D0D0D0;
+}
+
+.square.light[selected] {
+	background-color: #E4E4D4;
+}
+
+.square.light[highlighted] {
+	background-color: #E0E0F0;
+}
+
+.square.light[checked] {
+	background-color: #E09090;
+}
+
+.square.light[selected][checked] {
+	background-color: #F4A4A4;
+}
+
+.square.dark {
+	background-color: #909080;
+}
+
+.square.dark[selected] {
+	background-color: #B0B080;
+}
+
+.square.dark[highlighted] {
+	background-color: #9898A8;
+}
+
+.square.dark[checked] {
+	background-color: #A87060;
+}
+
+.square.dark[selected][checked] {
+	background-color: #C89080;
+}
+
+[piecetype] {
+	background-size: 100%;
+}
+
+[piececolor='white'][piecetype='pawn'] {
+	background-image: url("../resources/piece/wp.svg");
+}
+
+[piececolor='white'][piecetype='knight'] {
+	background-image: url("../resources/piece/wn.svg");
+}
+
+[piececolor='white'][piecetype='bishop'] {
+	background-image: url("../resources/piece/wb.svg");
+}
+
+[piececolor='white'][piecetype='rook'] {
+	background-image: url("../resources/piece/wr.svg");
+}
+
+[piececolor='white'][piecetype='queen'] {
+	background-image: url("../resources/piece/wq.svg");
+}
+
+[piececolor='white'][piecetype='king'] {
+	background-image: url("../resources/piece/wk.svg");
+}
+
+[piececolor='black'][piecetype='pawn'] {
+	background-image: url("../resources/piece/bp.svg");
+}
+
+[piececolor='black'][piecetype='knight'] {
+	background-image: url("../resources/piece/bn.svg");
+}
+
+[piececolor='black'][piecetype='bishop'] {
+	background-image: url("../resources/piece/bb.svg");
+}
+
+[piececolor='black'][piecetype='rook'] {
+	background-image: url("../resources/piece/br.svg");
+}
+
+[piececolor='black'][piecetype='queen'] {
+	background-image: url("../resources/piece/bq.svg");
+}
+
+[piececolor='black'][piecetype='king'] {
+	background-image: url("../resources/piece/bk.svg");
+}
+
+#sidebar-right {
+	position: absolute;
+	width: 30%;
+	right: 0;
+}
+*/
