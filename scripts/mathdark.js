@@ -18,6 +18,7 @@ const profiles = {
   rending: false,
   relentless: false,
   sniper: false,
+  lockOn: false,
   defenderPPU: 0,
   defenderUnitSize: 1,
   attackerPPU: 0,
@@ -120,7 +121,8 @@ const effectiveQuality = function(p, ed) {
   const poisonFactor = p.poison ? 3 : 1;
   const rendFactor = p.rending ? effectiveDefense(ed, 4) / ed : 1;
   const snipeQuality = p.sniper ? 5 : p.quality;
-  const stealthQuality = snipeQuality - (((snipeQuality > 1) && p.stealth) ? 1 : 0);
+  const stealthActive = p.stealth && (!p.lockOn);
+  const stealthQuality = snipeQuality - (((snipeQuality > 1) && stealthActive) ? 1 : 0);
   return stealthQuality - 1 + rendFactor * poisonFactor;
 }
 
