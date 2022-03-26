@@ -8,14 +8,15 @@ const profiles = {
   quality: 5,
   attacks: 1,
   ap: 0,
+  blast: 1,
   deadly: 1,
   poison: false,
   rending: false,
   relentless: false,
-  defenderPPU: null,
-  defenderUnitSize: null,
-  attackerPPU: null,
-  attackerUnitSize: null
+  defenderPPU: 0,
+  defenderUnitSize: 1,
+  attackerPPU: 0,
+  attackerUnitSize: 1
 };
 
 const defenseParser = {
@@ -30,7 +31,9 @@ const toughParser = {
   "not-tough": 1,
   "tough-three": 3,
   "tough-six": 6,
+  "tough-nine": 9,
   "tough-twelve": 12,
+  "tough-fifteen": 15,
   "tough-eighteen": 18,
   "tough-twenty-four": 24
 };
@@ -66,10 +69,18 @@ const apParser = {
   "ap4": 4
 };
 
+const blastParser = {
+  "not-blast": 1,
+  "blast-three": 3,
+  "blast-six": 6,
+  "blast-nine": 9,
+  "blast-twelve": 12
+};
+
 const deadlyParser = {
   "not-deadly": 1,
-  "deadly3": 3,
-  "deadly6": 6
+  "deadly-three": 3,
+  "deadly-six": 6
 };
 
 const unitSizeParser = {
@@ -85,6 +96,7 @@ const parseSelector = {
   "quality": qualityParser,
   "attacks": attacksParser,
   "ap": apParser,
+  "blast": blastParser,
   "deadly": deadlyParser,
   "defenderUnitSize": unitSizeParser,
   "attackerUnitSize": unitSizeParser
@@ -102,12 +114,14 @@ const effectiveDefense = function(d, ap) {
 const recompute = function(p) {
   const kpw = killsPerWound(p.deadly, p.toughness);
   const ed = effectiveDefense(p.defense, p.ap);
+  const blastFactor = p.blast > p.defenderUnitSize ? p.defenderUnitSize : p.blast;
   const rendFactor = p.rending ? effectiveDefense(ed, 4) / ed : 1;
   const poisonFactor = p.poison ? 3 : 1;
   const relentlessFactor = p.relentless ? 7/6 : 1;
   const expectedAttacks = p.attacks * relentlessFactor;
   const effectiveQuality = p.quality - 1 + rendFactor * poisonFactor;
-  const expectedWounds = expectedAttacks * effectiveQuality * ed / 36;
+  const expectedHits = expectedAttacks * effectiveQuality * blastFactor;
+  const expectedWounds = expectedHits * ed / 36;
   return expectedWounds * kpw;
 };
 
