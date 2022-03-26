@@ -8,6 +8,7 @@ const killEfficacyOutput = document.querySelector('#kill-efficacy-output');
 const profiles = {
   defense: 1,
   toughness: 1,
+  stealth: false,
   quality: 5,
   attacks: 1,
   ap: 0,
@@ -115,17 +116,22 @@ const effectiveDefense = function(d, ap) {
   return modifiedDef <= 5 ? modifiedDef : 5;
 }
 
+const effectiveQuality = function(p, ed) {
+  const poisonFactor = p.poison ? 3 : 1;
+  const rendFactor = p.rending ? effectiveDefense(ed, 4) / ed : 1;
+  const snipeQuality = p.sniper ? 5 : p.quality;
+  const stealthQuality = snipeQuality - (((snipeQuality > 1) && p.stealth) ? 1 : 0);
+  return stealthQuality - 1 + rendFactor * poisonFactor;
+}
+
 const recompute = function(p) {
   const kpw = killsPerWound(p.deadly, p.toughness);
   const ed = effectiveDefense(p.defense, p.ap);
   const blastFactor = p.blast > p.defenderUnitSize ? p.defenderUnitSize : p.blast;
-  const rendFactor = p.rending ? effectiveDefense(ed, 4) / ed : 1;
-  const poisonFactor = p.poison ? 3 : 1;
   const relentlessFactor = p.relentless ? 7/6 : 1;
   const expectedAttacks = p.attacks * relentlessFactor;
-  const snipeQuality = p.sniper ? 5 : p.quality;
-  const effectiveQuality = snipeQuality - 1 + rendFactor * poisonFactor;
-  const expectedHits = expectedAttacks * effectiveQuality * blastFactor;
+  const effQuality = effectiveQuality(p, ed);
+  const expectedHits = expectedAttacks * effQuality * blastFactor;
   const expectedWounds = expectedHits * ed / 36;
   return expectedWounds * kpw;
 };
