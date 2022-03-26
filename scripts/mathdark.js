@@ -1,6 +1,9 @@
 
 const allInputs = document.querySelector('#all-inputs');
 const killsOutput = document.querySelector('#kills-output');
+const pointsKilledOutput = document.querySelector('#points-killed-output');
+const kppOutput = document.querySelector('#kpp-output');
+const killEfficacyOutput = document.querySelector('#kill-efficacy-output');
 
 const profiles = {
   defense: 1,
@@ -125,9 +128,29 @@ const recompute = function(p) {
   return expectedWounds * kpw;
 };
 
+const displayValueIn = function(value, container) {
+  container.textContent = value.toFixed(4);
+}
+
 const updateOutput = function() {
   const expectedKills = recompute(profiles);
-  killsOutput.textContent = expectedKills.toFixed(4);
+  displayValueIn(expectedKills, killsOutput);
+
+  if (profiles.defenderPPU != 0) {
+    const pointsKilled = expectedKills * profiles.defenderPPU;
+    displayValueIn(pointsKilled, pointsKilledOutput);
+  }
+
+  if (profiles.attackerPPU != 0) {
+    const killsPerPoint = expectedKills / profiles.attackerPPU;
+    displayValueIn(killsPerPoint, kppOutput);
+  }
+
+  if (profiles.defenderPPU != 0 && profiles.attackerPPU != 0) {
+    const killEfficacy = expectedKills * profiles.defenderPPU / profiles.attackerPPU;
+    displayValueIn(killEfficacy, killEfficacyOutput);
+  }
+
 };
 
 updateOutput();
