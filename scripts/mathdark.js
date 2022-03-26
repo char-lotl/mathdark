@@ -16,6 +16,7 @@ const profiles = {
   poison: false,
   rending: false,
   relentless: false,
+  sniper: false,
   defenderPPU: 0,
   defenderUnitSize: 1,
   attackerPPU: 0,
@@ -122,7 +123,8 @@ const recompute = function(p) {
   const poisonFactor = p.poison ? 3 : 1;
   const relentlessFactor = p.relentless ? 7/6 : 1;
   const expectedAttacks = p.attacks * relentlessFactor;
-  const effectiveQuality = p.quality - 1 + rendFactor * poisonFactor;
+  const snipeQuality = p.sniper ? 5 : p.quality;
+  const effectiveQuality = snipeQuality - 1 + rendFactor * poisonFactor;
   const expectedHits = expectedAttacks * effectiveQuality * blastFactor;
   const expectedWounds = expectedHits * ed / 36;
   return expectedWounds * kpw;
