@@ -132,6 +132,10 @@ const displayValueIn = function(value, container) {
   container.textContent = value.toFixed(4);
 }
 
+const clearDisplay = function(container) {
+  container.textContent = "";
+}
+
 const updateOutput = function() {
   const expectedKills = recompute(profiles);
   displayValueIn(expectedKills, killsOutput);
@@ -139,16 +143,22 @@ const updateOutput = function() {
   if (profiles.defenderPPU != 0) {
     const pointsKilled = expectedKills * profiles.defenderPPU;
     displayValueIn(pointsKilled, pointsKilledOutput);
+  } else {
+    clearDisplay(pointsKilledOutput)
   }
 
   if (profiles.attackerPPU != 0) {
     const killsPerPoint = expectedKills / profiles.attackerPPU;
     displayValueIn(killsPerPoint, kppOutput);
+  } else {
+    clearDisplay(kppOutput);
   }
 
-  if (profiles.defenderPPU != 0 && profiles.attackerPPU != 0) {
+  if ((profiles.defenderPPU != 0) && (profiles.attackerPPU != 0)) {
     const killEfficacy = expectedKills * profiles.defenderPPU / profiles.attackerPPU;
     displayValueIn(killEfficacy, killEfficacyOutput);
+  } else {
+    clearDisplay(killEfficacyOutput);
   }
 
 };
@@ -162,7 +172,6 @@ allInputs.addEventListener('change', e => {
   } else if (e.target.type === 'checkbox') {
     profiles[changedFieldID] = e.target.checked;
   } else if (e.target.type === 'number') {
-    console.log(e.target.value);
     profiles[changedFieldID] = Number(e.target.value);
   } else {
     console.log(e.target.type);
