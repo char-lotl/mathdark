@@ -8,6 +8,7 @@ const killEfficacyOutput = document.querySelector('#kill-efficacy-output');
 const profiles = {
   defense: 1,
   toughness: 1,
+  regeneration: false,
   stealth: false,
   quality: 5,
   attacks: 1,
@@ -108,8 +109,36 @@ const parseSelector = {
   "attackerUnitSize": unitSizeParser
 };
 
-const killsPerWound = function(d, t) {
-  return d < t ? d / t : 1;
+const killsPerWound = function(d, t, regen, rendFrac) {
+  if (!regen) {
+    return d < t ? d / t : 1;
+  }
+  const nonRendFrac = 1 - rendFrac;
+  if (d === 1) {
+    return 1 / t * (1 - (nonRendFrac / 3));
+  }
+  if (t === 1) {
+    return 1 - nonRendFrac * ((1/3) ** d);
+  }
+  const damDist = (d === 3) ? [0, 6/26, 12/26, 8/26] :
+  [0, 12/728, 60/728, 160/728, 240/728, 192/728, 64/728];
+  const discount = (d === 3) ? 26/27 : 728 / 729;
+  const woundDist = [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+
+  for (let i = 0; i < t; i++) {
+    for (let j in damDist) {
+      j = Number(j);
+      if (i + j < t) {
+        woundDist[i + j] += woundDist[i] * damDist[j] * nonRendFrac;
+      }
+    }
+    if (i + d < t) {
+      woundDist[i + d] += woundDist[i] * rendFrac;
+    }
+  }
+  const sum = woundDist.reduce((partialSum, a) => partialSum + a, 0);
+  console.log(woundDist);
+  return discount / sum;
 };
 
 const effectiveDefense = function(d, ap) {
@@ -117,23 +146,30 @@ const effectiveDefense = function(d, ap) {
   return modifiedDef <= 5 ? modifiedDef : 5;
 }
 
-const effectiveQuality = function(p, ed) {
+/*const effectiveQuality = function(p, ed) {
   const poisonFactor = p.poison ? 3 : 1;
   const rendFactor = p.rending ? effectiveDefense(ed, 4) / ed : 1;
   const snipeQuality = p.sniper ? 5 : p.quality;
   const stealthActive = p.stealth && (!p.lockOn);
   const stealthQuality = snipeQuality - (((snipeQuality > 1) && stealthActive) ? 1 : 0);
   return stealthQuality - 1 + rendFactor * poisonFactor;
-}
+}*/
 
 const recompute = function(p) {
-  const kpw = killsPerWound(p.deadly, p.toughness);
   const ed = effectiveDefense(p.defense, p.ap);
   const blastFactor = p.blast > p.defenderUnitSize ? p.defenderUnitSize : p.blast;
   const relentlessFactor = p.relentless ? 7/6 : 1;
   const expectedAttacks = p.attacks * relentlessFactor;
-  const effQuality = effectiveQuality(p, ed);
-  const expectedHits = expectedAttacks * effQuality * blastFactor;
+  //const effQuality = effectiveQuality(p, ed);
+  const poisonFactor = p.poison ? 3 : 1;
+  const rendFactor = p.rending ? effectiveDefense(ed, 4) / ed : 1;
+  const snipeQuality = p.sniper ? 5 : p.quality;
+  const stealthActive = p.stealth && (!p.lockOn);
+  const stealthQuality = snipeQuality - (((snipeQuality > 1) && stealthActive) ? 1 : 0);
+  const effectiveQuality = stealthQuality - 1 + rendFactor * poisonFactor;
+  const rendFraction = p.rending ? rendFactor * poisonFactor / effectiveQuality : 0;
+  const kpw = killsPerWound(p.deadly, p.toughness, p.regeneration, rendFraction);
+  const expectedHits = expectedAttacks * effectiveQuality * blastFactor;
   const expectedWounds = expectedHits * ed / 36;
   return expectedWounds * kpw;
 };
