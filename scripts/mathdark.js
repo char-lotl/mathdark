@@ -170,7 +170,7 @@ const recompute = function(p) {
   const kpw = killsPerWound(p.deadly, p.toughness, p.regeneration, rendFraction);
   const expectedHits = expectedAttacks * effectiveQuality * blastFactor;
   const expectedWounds = expectedHits * ed / 36;
-  return expectedWounds * kpw;
+  return expectedWounds * kpw * p.attackerUnitSize;
 };
 
 const displayValueIn = function(value, container) {
