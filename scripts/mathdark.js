@@ -137,7 +137,6 @@ const killsPerWound = function(d, t, regen, rendFrac) {
     }
   }
   const sum = woundDist.reduce((partialSum, a) => partialSum + a, 0);
-  console.log(woundDist);
   return discount / sum;
 };
 
