@@ -185,8 +185,10 @@ const updateOutput = function() {
   const expectedKills = recompute(profiles);
   displayValueIn(expectedKills, killsOutput);
 
+  const defenderPPM = profiles.defenderPPU / profiles.defenderUnitSize;
+
   if (profiles.defenderPPU != 0) {
-    const pointsKilled = expectedKills * profiles.defenderPPU;
+    const pointsKilled = expectedKills * defenderPPM;
     displayValueIn(pointsKilled, pointsKilledOutput);
   } else {
     clearDisplay(pointsKilledOutput)
@@ -200,7 +202,7 @@ const updateOutput = function() {
   }
 
   if ((profiles.defenderPPU != 0) && (profiles.attackerPPU != 0)) {
-    const killEfficacy = expectedKills * profiles.defenderPPU / profiles.attackerPPU;
+    const killEfficacy = expectedKills * defenderPPM / profiles.attackerPPU;
     displayValueIn(killEfficacy, killEfficacyOutput);
   } else {
     clearDisplay(killEfficacyOutput);
